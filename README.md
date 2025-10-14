@@ -1,5 +1,10 @@
 # USRTG Server
 
+USRTG (Unified Sim Racing Telemetry Getter) is a powerful and versatile tool designed to collect telemetry data from various racing games and broadcast it in real-time. By leveraging modern .NET technologies, USRTG ensures efficient and reliable data handling, making it an essential utility for sim racing enthusiasts and developers alike.
+
+## Supported Games
+- **Assetto Corsa**: Seamlessly integrates with one of the most popular racing simulators to provide detailed telemetry data.
+
 ## Overview
 The USRTG Server is a .NET-based application designed to handle network communication and packet processing. It is structured to provide efficient and scalable solutions for real-time data handling.
 
@@ -69,3 +74,7 @@ This script is a browser-based utility designed to fetch and display live data f
 - Press the `✕` button or the `Escape` key to close the panel.
 
 This script is useful for debugging and monitoring live data streams in real-time.
+
+# License
+
+This project is licensed under the MIT license. See the license for more.
