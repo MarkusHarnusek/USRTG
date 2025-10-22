@@ -61,14 +61,14 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)] public string split;
             public int completedLaps;
             public int position;
-            public int iCurrentTime; // ms
-            public int iLastTime;   // ms
-            public int iBestTime;   // ms
-            public float sessionTimeLeft; // seconds
+            public int iCurrentTime;
+            public int iLastTime;   
+            public int iBestTime;   
+            public float sessionTimeLeft; 
             public float distanceTraveled;
-            public int isInPit; // Should be int (0 or 1)
+            public int isInPit; 
             public int currentSectorIndex;
-            public int lastSectorTime; // ms
+            public int lastSectorTime; 
             public int numberOfLaps;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)] public string tyreCompound;
             public float replayTimeMultiplier;
@@ -79,9 +79,9 @@ namespace USRTG.AC
             public int idealLineOn;
             public int isInPitLane;
             public float surfaceGrip;
-            public int mandatoryPitDone; // Added
-            public float windSpeed; // Added
-            public float windDirection; // Added
+            public int mandatoryPitDone;
+            public float windSpeed; 
+            public float windDirection; 
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
@@ -104,28 +104,27 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionMaxTravel;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreRadius;
             public float maxTurboBoost;
-            // Removed deprecated airTemp and roadTemp
-            public int penaltiesEnabled; // Changed to int
+            public int penaltiesEnabled; 
             public float aidFuelRate;
             public float aidTireRate;
             public float aidMechanicalDamage;
-            public int aidAllowTyreBlankets; // Added
-            public float aidStability; // Added
-            public int aidAutoClutch; // Added
-            public int aidAutoBlip; // Added
-            public int hasDRS; // Added
-            public int hasERS; // Added
-            public int hasKERS; // Added
-            public float kersMaxJ; // Added
-            public int engineBrakeSettingsCount; // Added
-            public int ersRecoveryLevels; // Added
-            public int ersPowerLevels; // Added
-            public int ersHeatCharging; // Added
-            public int ersIsCharging; // Added
-            public float kersCurrentKJ; // Added
-            public int drsAvailable; // Added
-            public int drsEnabled; // Added
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTemp; // Added
+            public int aidAllowTyreBlankets;
+            public float aidStability;
+            public int aidAutoClutch;
+            public int aidAutoBlip;
+            public int hasDRS; 
+            public int hasERS; 
+            public int hasKERS; 
+            public float kersMaxJ;
+            public int engineBrakeSettingsCount; 
+            public int ersRecoveryLevels;
+            public int ersPowerLevels; 
+            public int ersHeatCharging; 
+            public int ersIsCharging; 
+            public float kersCurrentKJ; 
+            public int drsAvailable; 
+            public int drsEnabled; 
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTemp; 
         }
     }
 }

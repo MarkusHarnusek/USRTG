@@ -3,9 +3,10 @@ using USRTG.AC;
 
 namespace USRTG
 {
-    internal class Program
+    public class Program
     {
         private static volatile Packet? latestPacket;
+        public readonly string acInstallPath = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\assettocorsa";
 
         static void Main(string[] args)
         {
