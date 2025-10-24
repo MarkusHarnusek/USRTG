@@ -48,12 +48,10 @@ namespace USRTG
 
         private async Task HandleContext(HttpListenerContext context, CancellationToken token)
         {
-            // Add CORS headers to allow cross-origin requests
             context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
             context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-            // Handle preflight OPTIONS request
             if (context.Request.HttpMethod == "OPTIONS")
             {
                 context.Response.StatusCode = 200;

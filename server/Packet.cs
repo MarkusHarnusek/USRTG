@@ -47,9 +47,9 @@ namespace USRTG
 
         #region Session
 
-        public AC.ACEnums.AC_STATUS status { get; }
-        public AC.ACEnums.AC_SESSION_TYPE session { get; }
-        public AC.ACEnums.AC_FLAG_TYPE flag { get; }
+        public int gameState { get; }
+        public int sessionType { get; }
+        public int flag { get; }
         public float sessionTimeLeft { get; }
         public int numCars { get; }
         public int sectorCount { get; }
@@ -97,7 +97,7 @@ namespace USRTG
         /// <summary>
         /// Assetto corsa telemetry packet
         /// </summary>
-        public Packet(int id, float gas, float brake, float steerAngle, float speedKmh, int gear, int rpms, float fuel, float maxFuel, float maxRpm, float turboBoost, float ballast, float drs, float tc, float abs, float kersCharge, float kersInput, float heading, float pitch, float roll, AC.ACEnums.AC_STATUS status, AC.ACEnums.AC_SESSION_TYPE session, AC.ACEnums.AC_FLAG_TYPE flag, float sessionTimeLeft, int numCars, int sectorCount, float airTemp, float roadTemp, float surfaceGrip, int normalizedCarPosition, int completedLaps, int position, int currentTime, int lastTime, int bestTime, float distanceTraveled, int isInPit, int isInPitLane, int currentSectorIndex, int lastSectorTime, string? tyreCompound)
+        public Packet(int id, float gas, float brake, float steerAngle, float speedKmh, int gear, int rpms, float fuel, float maxFuel, float maxRpm, float turboBoost, float ballast, float drs, float tc, float abs, float kersCharge, float kersInput, float heading, float pitch, float roll, int gameState, int sessionType, int flag, float sessionTimeLeft, int numCars, int sectorCount, float airTemp, float roadTemp, float surfaceGrip, int normalizedCarPosition, int completedLaps, int position, int currentTime, int lastTime, int bestTime, float distanceTraveled, int isInPit, int isInPitLane, int currentSectorIndex, int lastSectorTime, string? tyreCompound)
         {
             this.id = id;
             this.gas = gas;
@@ -119,8 +119,8 @@ namespace USRTG
             this.heading = heading;
             this.pitch = pitch;
             this.roll = roll;
-            this.status = status;
-            this.session = session;
+            this.gameState = gameState;
+            this.sessionType = sessionType;
             this.flag = flag;
             this.sessionTimeLeft = sessionTimeLeft;
             this.numCars = numCars;
