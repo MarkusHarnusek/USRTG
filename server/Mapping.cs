@@ -18,5 +18,18 @@ namespace USRTG
                     throw new NotImplementedException();
             }
         }
+
+        public int MapSessionType(int sessionType, Enums.Game game)
+        {
+            switch (game)
+            {
+                case Enums.Game.AssettoCorsa:
+                    return sessionType; // Direct mapping for Assetto Corsa
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+
     }
 }
