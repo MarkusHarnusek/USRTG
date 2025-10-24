@@ -2,7 +2,7 @@
 
 namespace USRTG.AC
 {
-    public class ACStructs
+    public class Structs
     {
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
         public struct SPageFilePhysics

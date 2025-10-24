@@ -1,6 +1,6 @@
 ﻿namespace USRTG.AC
 {
-    public class ACEnums
+    public class Enums
     {
         public enum AC_STATUS { AC_OFF = 0, AC_REPLAY = 1, AC_LIVE = 2, AC_PAUSE = 3 }
         public enum AC_SESSION_TYPE { AC_UNKNOWN = -1, AC_PRACTICE = 0, AC_QUALIFY = 1, AC_RACE = 2, AC_HOTLAP = 3, AC_TIME_ATTACK = 4, AC_DRIFT = 5, AC_DRAG = 6 }
