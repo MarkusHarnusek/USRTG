@@ -1,6 +1,4 @@
-﻿using System.Runtime.Intrinsics.X86;
-
-namespace USRTG
+﻿namespace USRTG
 {
     public class Packet
     {

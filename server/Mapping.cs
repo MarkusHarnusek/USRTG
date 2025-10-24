@@ -8,7 +8,7 @@ namespace USRTG
 {
     public class Mapping
     {
-        public int MapGameState(int state, Enums.Game game)
+        public static int MapGameState(int state, Enums.Game game)
         {
             switch (game)
             {
@@ -19,7 +19,7 @@ namespace USRTG
             }
         }
 
-        public int MapSessionType(int sessionType, Enums.Game game)
+        public static int MapSessionType(int sessionType, Enums.Game game)
         {
             switch (game)
             {
@@ -30,7 +30,7 @@ namespace USRTG
             }
         }
 
-        public int MapFlagType(int flagType, Enums.Game game)
+        public static int MapFlagType(int flagType, Enums.Game game)
         {
             switch (game)
             {

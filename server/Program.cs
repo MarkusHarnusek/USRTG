@@ -1,7 +1,4 @@
-﻿using System;
-using USRTG.AC;
-
-namespace USRTG
+﻿namespace USRTG
 {
     public class Program
     {
@@ -15,7 +12,7 @@ namespace USRTG
 
             while (true)
             {
-                latestPacket = Handle.Run();
+                latestPacket = AC.Handle.Run();
             }
         }
     }
