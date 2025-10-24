@@ -40,9 +40,9 @@ namespace USRTG.AC
                     heading: physics.heading,
                     pitch: physics.pitch,
                     roll: physics.roll,
-                    status: (AC.Enums.AC_STATUS)graphics.status,
-                    session: (AC.Enums.AC_SESSION_TYPE)graphics.session,
-                    flag: (AC.Enums.AC_FLAG_TYPE)graphics.flag,
+                    gameState: graphics.status,
+                    sessionType: graphics.session,
+                    flag: graphics.flag,
                     sessionTimeLeft: graphics.sessionTimeLeft,
                     numCars: staticData.numCars,
                     sectorCount: staticData.sectorCount,
@@ -139,3 +139,4 @@ namespace USRTG.AC
             }
         }
     }
+}
