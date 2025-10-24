@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace USRTG
 {
-    internal class Mapping
+    public class Mapping
     {
+        public int MapGameState(int state, Enums.Game game)
+        {
+            switch (game)
+            {
+                case Enums.Game.AssettoCorsa:
+                    return state; // Direct mapping for Assetto Corsa
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }
