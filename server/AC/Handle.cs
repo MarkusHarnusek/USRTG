@@ -83,6 +83,8 @@ namespace USRTG.AC
             MemoryMappedViewAccessor accessorGraphics = null!;
             MemoryMappedViewAccessor accessorStatic = null!;
 
+            //ValidateStructureSizes();
+
             try
             {
                 mmfPhysics = MemoryMappedFile.OpenExisting(PhysicsMapName);

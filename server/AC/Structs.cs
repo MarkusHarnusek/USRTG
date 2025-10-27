@@ -25,11 +25,11 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreDirtyLevel;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] camberRad;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionTravel;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempI;  // Inner sidewall [FL, FR, RL, RR]
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempM;  // Middle/mean sidewall
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempO;  // Outer sidewall
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempC;  // Contact patch surface (if available)
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreCoreTemperature;  // Core temps (always available)
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempI;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempM;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempO;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempC;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreCoreTemperature;
             public float drs;
             public float tc;
             public float heading;
