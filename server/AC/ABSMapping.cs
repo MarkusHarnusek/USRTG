@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace USRTG.AC
 {
-    public class TCMapping
+    public class ABSMapping
     {
         private readonly Dictionary<string, SortedSet<float>> carCurves = new();
         private readonly float epsilon = 0.001f;
 
-        public void UpdateCurve(string carModel, float tc)
+        public void UpdateCurve(string carModel, float abs)
         {
-            if (tc <= 0)
+            if (abs <= 0)
             {
                 return; 
             }
@@ -22,15 +22,15 @@ namespace USRTG.AC
                 carCurves[carModel] = curve;
             }
 
-            if (!curve.Any(k => Math.Abs(k - tc) < epsilon))
+            if (!curve.Any(k => Math.Abs(k - abs) < epsilon))
             {
-                curve.Add(tc);
+                curve.Add(abs);
             }
         }
 
-        public int GetTCLevel(string carModel, float tc)
+        public int GetABSLevel(string carModel, float abs)
         {
-            if (Math.Abs(tc) < epsilon)
+            if (Math.Abs(abs) < epsilon)
             {
                 return 0; 
             }
@@ -40,8 +40,8 @@ namespace USRTG.AC
                 return -1; 
             }
 
-            float? matchedTc = curve.FirstOrDefault(k => Math.Abs(k - tc) < epsilon);
-            if (!matchedTc.HasValue)
+            float? matchedAbs = curve.FirstOrDefault(k => Math.Abs(k - abs) < epsilon);
+            if (!matchedAbs.HasValue)
             {
                 return -1;
             }
@@ -50,7 +50,7 @@ namespace USRTG.AC
 
             for (int i = 0; i < sortedAscending.Count; i++)
             {
-                if (Math.Abs(sortedAscending[i] - tc) < epsilon)
+                if (Math.Abs(sortedAscending[i] - abs) < epsilon)
                 {
                     return i + 1;
                 }
@@ -61,7 +61,7 @@ namespace USRTG.AC
 
         public void Clear() => carCurves.Clear();
 
-        // Debug method to get all discoverd levels
+        // Debug method to get all discovered levels
         public string GetDiscoveredLevels(string carModel)
         {
             if (!carCurves.TryGetValue(carModel, out var curve))

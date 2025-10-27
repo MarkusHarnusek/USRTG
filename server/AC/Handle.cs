@@ -15,11 +15,13 @@ namespace USRTG.AC
         private const int GraphicsSize = 468;
         private const int StaticSize = 864;
         private static TCMapping tc = new TCMapping();
+        private static ABSMapping abs = new ABSMapping();
 
         public static Packet Run()
         {
             (var physics, var graphics, var staticData) = GetData();
             tc.UpdateCurve(staticData.carModel, physics.tc);
+            abs.UpdateCurve(staticData.carModel, physics.abs);
 
             return new Packet(
                 id: graphics.packetId,
@@ -36,7 +38,7 @@ namespace USRTG.AC
                 ballast: physics.ballast,
                 drs: physics.drs,
                 tc: tc.GetTCLevel(staticData.carModel, physics.tc),
-                abs: physics.abs,
+                abs: abs.GetABSLevel(staticData.carModel, physics.abs),
                 kersCharge: physics.kersCharge,
                 kersInput: physics.kersInput,
                 heading: physics.heading,
