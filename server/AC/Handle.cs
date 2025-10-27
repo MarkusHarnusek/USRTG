@@ -15,23 +15,11 @@ namespace USRTG.AC
         private const int GraphicsSize = 468;
         private const int StaticSize = 864;
         private static TCMapping tc = new TCMapping();
-        private static string lastCarName = "none";
-
-        public static void Setup()
-        {
-            tc = new TCMapping();
-            tc.LoadCurveForCar(lastCarName);
-        }
 
         public static Packet Run()
         {
             (var physics, var graphics, var staticData) = GetData();
-
-            if (staticData.carModel != lastCarName)
-            {
-                tc.LoadCurveForCar(staticData.carModel);
-                lastCarName = staticData.carModel;
-            }
+            tc.UpdateCurve(staticData.carModel, physics.tc);
 
             return new Packet(
                 id: graphics.packetId,
@@ -47,7 +35,7 @@ namespace USRTG.AC
                 turboBoost: physics.turboBoost,
                 ballast: physics.ballast,
                 drs: physics.drs,
-                tc: physics.tc,
+                tc: tc.GetTCLevel(staticData.carModel, physics.tc),
                 abs: physics.abs,
                 kersCharge: physics.kersCharge,
                 kersInput: physics.kersInput,
