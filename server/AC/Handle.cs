@@ -45,8 +45,8 @@ namespace USRTG.AC
                 pitch: physics.pitch,
                 roll: physics.roll,
                 gameState: Mapping.MapGameState(graphics.status, USRTG.Enums.Game.AssettoCorsa),
-                sessionType: Mapping.MapGameState(graphics.session, USRTG.Enums.Game.AssettoCorsa),
-                flag: Mapping.MapGameState(graphics.flag, USRTG.Enums.Game.AssettoCorsa),
+                sessionType: Mapping.MapSessionType(graphics.session, USRTG.Enums.Game.AssettoCorsa),
+                flag: Mapping.MapFlagType(graphics.flag, USRTG.Enums.Game.AssettoCorsa),
                 sessionTimeLeft: graphics.sessionTimeLeft,
                 numCars: staticData.numCars,
                 sectorCount: staticData.sectorCount,
@@ -64,7 +64,13 @@ namespace USRTG.AC
                 isInPitLane: graphics.isInPitLane,
                 currentSectorIndex: graphics.currentSectorIndex,
                 lastSectorTime: graphics.lastSectorTime,
-                tyreCompound: graphics.tyreCompound
+                tyreCompound: graphics.tyreCompound,
+                tyreWear: physics.tyreWear,
+                tyreTempInner: physics.tyreTempI,
+                tyreTempMiddle: physics.tyreTempM,
+                tyreTempOuter: physics.tyreTempO,
+                tyreCoreTemp: physics.tyreCoreTemperature,
+                wheelSlip: physics.wheelSlip
             );
         }
 

@@ -23,9 +23,13 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] wheelAngularSpeed;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreWear;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreDirtyLevel;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreCoreTemperature;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] camberRad;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionTravel;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempI;  // Inner sidewall [FL, FR, RL, RR]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempM;  // Middle/mean sidewall
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempO;  // Outer sidewall
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempC;  // Contact patch surface (if available)
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreCoreTemperature;  // Core temps (always available)
             public float drs;
             public float tc;
             public float heading;
@@ -43,8 +47,8 @@ namespace USRTG.AC
             public float turboBoost;
             public float ballast;
             public float airDensity;
-            public float airTemp; 
-            public float roadTemp; 
+            public float airTemp;
+            public float roadTemp;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public float[] localAngularVel;
             public float finalFF;
         }
@@ -53,8 +57,8 @@ namespace USRTG.AC
         public struct SPageFileGraphic
         {
             public int packetId;
-            public int status; 
-            public int session; 
+            public int status;
+            public int session;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)] public string currentTime;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)] public string lastTime;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)] public string bestTime;
@@ -62,26 +66,26 @@ namespace USRTG.AC
             public int completedLaps;
             public int position;
             public int iCurrentTime;
-            public int iLastTime;   
-            public int iBestTime;   
-            public float sessionTimeLeft; 
+            public int iLastTime;
+            public int iBestTime;
+            public float sessionTimeLeft;
             public float distanceTraveled;
-            public int isInPit; 
+            public int isInPit;
             public int currentSectorIndex;
-            public int lastSectorTime; 
+            public int lastSectorTime;
             public int numberOfLaps;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)] public string tyreCompound;
             public float replayTimeMultiplier;
             public float normalizedCarPosition;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public float[] carCoordinates;
             public float penaltyTime;
-            public int flag; 
+            public int flag;
             public int idealLineOn;
             public int isInPitLane;
             public float surfaceGrip;
             public int mandatoryPitDone;
-            public float windSpeed; 
-            public float windDirection; 
+            public float windSpeed;
+            public float windDirection;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
@@ -104,7 +108,7 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionMaxTravel;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreRadius;
             public float maxTurboBoost;
-            public int penaltiesEnabled; 
+            public int penaltiesEnabled;
             public float aidFuelRate;
             public float aidTireRate;
             public float aidMechanicalDamage;
@@ -112,19 +116,19 @@ namespace USRTG.AC
             public float aidStability;
             public int aidAutoClutch;
             public int aidAutoBlip;
-            public int hasDRS; 
-            public int hasERS; 
-            public int hasKERS; 
+            public int hasDRS;
+            public int hasERS;
+            public int hasKERS;
             public float kersMaxJ;
-            public int engineBrakeSettingsCount; 
+            public int engineBrakeSettingsCount;
             public int ersRecoveryLevels;
-            public int ersPowerLevels; 
-            public int ersHeatCharging; 
-            public int ersIsCharging; 
-            public float kersCurrentKJ; 
-            public int drsAvailable; 
-            public int drsEnabled; 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTemp; 
+            public int ersPowerLevels;
+            public int ersHeatCharging;
+            public int ersIsCharging;
+            public float kersCurrentKJ;
+            public int drsAvailable;
+            public int drsEnabled;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTemp;
         }
     }
 }

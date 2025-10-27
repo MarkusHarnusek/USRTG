@@ -75,13 +75,18 @@
         public int isInPitLane { get; }
         public int currentSectorIndex { get; }
         public int lastSectorTime { get; }
-        public string? tyreCompound { get; }
 
         #endregion
 
         #region Tyres 
 
-        public int[] tyreWear { get; } = [0, 0, 0, 0];
+        public string? tyreCompound { get; }
+        public float[] tyreWear { get; } = [0, 0, 0, 0];
+        public float[] tyreTempInner { get; } = [0.0f, 0.0f, 0.0f, 0.0f];
+        public float[] tyreTempMiddle { get; } = [0.0f, 0.0f, 0.0f, 0.0f];
+        public float[] tyreTempOuter { get; } = [0.0f, 0.0f, 0.0f, 0.0f];
+        public float[] tyreCoreTemp { get; } = [0.0f, 0.0f, 0.0f, 0.0f];
+        public float[] wheelSlip { get; } = [0.0f, 0.0f, 0.0f, 0.0f];
 
         #endregion
 
@@ -95,7 +100,7 @@
         /// <summary>
         /// Assetto corsa telemetry packet
         /// </summary>
-        public Packet(int id, float gas, float brake, float steerAngle, float speedKmh, int gear, int rpms, float fuel, float maxFuel, float maxRpm, float turboBoost, float ballast, float drs, float tc, float abs, float kersCharge, float kersInput, float heading, float pitch, float roll, int gameState, int sessionType, int flag, float sessionTimeLeft, int numCars, int sectorCount, float airTemp, float roadTemp, float surfaceGrip, int normalizedCarPosition, int completedLaps, int position, int currentTime, int lastTime, int bestTime, float distanceTraveled, int isInPit, int isInPitLane, int currentSectorIndex, int lastSectorTime, string? tyreCompound)
+        public Packet(int id, float gas, float brake, float steerAngle, float speedKmh, int gear, int rpms, float fuel, float maxFuel, float maxRpm, float turboBoost, float ballast, float drs, float tc, float abs, float kersCharge, float kersInput, float heading, float pitch, float roll, int gameState, int sessionType, int flag, float sessionTimeLeft, int numCars, int sectorCount, float airTemp, float roadTemp, float surfaceGrip, int normalizedCarPosition, int completedLaps, int position, int currentTime, int lastTime, int bestTime, float distanceTraveled, int isInPit, int isInPitLane, int currentSectorIndex, int lastSectorTime, string? tyreCompound, float[] tyreWear, float[] tyreTempInner, float[] tyreTempMiddle, float[] tyreTempOuter, float[] tyreCoreTemp, float[] wheelSlip)
         {
             this.id = id;
             this.gas = gas;
@@ -138,6 +143,12 @@
             this.currentSectorIndex = currentSectorIndex;
             this.lastSectorTime = lastSectorTime;
             this.tyreCompound = tyreCompound;
+            this.tyreWear = tyreWear;
+            this.tyreTempInner = tyreTempInner;
+            this.tyreTempMiddle = tyreTempMiddle;
+            this.tyreTempOuter = tyreTempOuter;
+            this.tyreCoreTemp = tyreCoreTemp;
+            this.wheelSlip = wheelSlip;
             this.maxRpm = maxRpm;
         }
     }
