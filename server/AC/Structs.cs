@@ -2,8 +2,18 @@
 
 namespace USRTG.AC
 {
-    public class Structs
+    /// <summary>
+    /// Assetto Corsa shared memory layout (shared memory version 1.7, AC 1.16).
+    /// Field order follows the official "Assetto Corsa Shared Memory" documentation exactly;
+    /// any reordering shifts every following field.
+    /// Wheel arrays are [FL, FR, RL, RR]. Strings are UTF-16.
+    /// </summary>
+    public static class Structs
     {
+        public const string PhysicsMapName = @"Local\acpmf_physics";
+        public const string GraphicsMapName = @"Local\acpmf_graphics";
+        public const string StaticMapName = @"Local\acpmf_static";
+
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
         public struct SPageFilePhysics
         {
@@ -23,13 +33,9 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] wheelAngularSpeed;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreWear;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreDirtyLevel;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] camberRad;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionTravel;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempI;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempM;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempO;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempC;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreCoreTemperature;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] camberRAD;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionTravel;
             public float drs;
             public float tc;
             public float heading;
@@ -51,6 +57,26 @@ namespace USRTG.AC
             public float roadTemp;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public float[] localAngularVel;
             public float finalFF;
+            public float performanceMeter;
+            public int engineBrake;
+            public int ersRecoveryLevel;
+            public int ersPowerLevel;
+            public int ersHeatCharging;
+            public int ersIsCharging;
+            public float kersCurrentKJ;
+            public int drsAvailable;
+            public int drsEnabled;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] brakeTemp;
+            public float clutch;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempI;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempM;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTempO;
+            public int isAIControlled;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)] public float[] tyreContactPoint;   // [4][3]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)] public float[] tyreContactNormal;  // [4][3]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)] public float[] tyreContactHeading; // [4][3]
+            public float brakeBias;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public float[] localVelocity;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
@@ -108,6 +134,8 @@ namespace USRTG.AC
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] suspensionMaxTravel;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreRadius;
             public float maxTurboBoost;
+            public float deprecated_1;  // was airTemp, moved to physics in 1.6
+            public float deprecated_2;  // was roadTemp, moved to physics in 1.6
             public int penaltiesEnabled;
             public float aidFuelRate;
             public float aidTireRate;
@@ -121,14 +149,17 @@ namespace USRTG.AC
             public int hasKERS;
             public float kersMaxJ;
             public int engineBrakeSettingsCount;
-            public int ersRecoveryLevels;
-            public int ersPowerLevels;
-            public int ersHeatCharging;
-            public int ersIsCharging;
-            public float kersCurrentKJ;
-            public int drsAvailable;
-            public int drsEnabled;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public float[] tyreTemp;
+            public int ersPowerControllerCount;
+            public float trackSPlineLength;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)] public string trackConfiguration;
+            public float ersMaxJ;
+            public int isTimedRace;
+            public int hasExtraLap;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)] public string carSkin;
+            public int reversedGridPositions;
+            public int pitWindowStart;
+            public int pitWindowEnd;
+            public int isOnline;
         }
     }
 }

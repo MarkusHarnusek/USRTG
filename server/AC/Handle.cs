@@ -1,157 +1,145 @@
-﻿using System.IO.MemoryMappedFiles;
-using System.Runtime.InteropServices;
-#pragma warning disable CA1416
-#pragma warning disable CA2263
+﻿using System.Runtime.Versioning;
+using USRTG.Kunos;
 
 namespace USRTG.AC
 {
-    public class Handle
+    /// <summary>Builds a <see cref="Packet"/> from the Assetto Corsa shared memory.</summary>
+    [SupportedOSPlatform("windows")]
+    public sealed class Handle : IDisposable
     {
-        private const string PhysicsMapName = @"Local\acpmf_physics";
-        private const string GraphicsMapName = @"Local\acpmf_graphics";
-        private const string StaticMapName = @"Local\acpmf_static";
+        private readonly SharedMemoryPage<Structs.SPageFilePhysics> _physics = new(Structs.PhysicsMapName);
+        private readonly SharedMemoryPage<Structs.SPageFileGraphic> _graphics = new(Structs.GraphicsMapName);
+        private readonly SharedMemoryPage<Structs.SPageFileStatic> _static = new(Structs.StaticMapName);
+        private readonly LevelMapping _tc = new();
+        private readonly LevelMapping _abs = new();
 
-        private const int PhysicsSize = 288;
-        private const int GraphicsSize = 468;
-        private const int StaticSize = 864;
-        private static TCMapping tc = new TCMapping();
-        private static ABSMapping abs = new ABSMapping();
-
-        public static Packet Run()
+        public Packet? TryRead()
         {
-            (var physics, var graphics, var staticData) = GetData();
-            tc.UpdateCurve(staticData.carModel, physics.tc);
-            abs.UpdateCurve(staticData.carModel, physics.abs);
+            if (!_static.TryRead(out var s) || !_graphics.TryRead(out var g) || !_physics.TryRead(out var p))
+            {
+                Close();
+                return null;
+            }
 
-            return new Packet(
-                id: graphics.packetId,
-                gas: physics.gas,
-                brake: physics.brake,
-                steerAngle: physics.steerAngle,
-                speedKmh: physics.speedKmh,
-                gear: physics.gear,
-                rpms: physics.rpms,
-                fuel: physics.fuel,
-                maxFuel: staticData.maxFuel,
-                maxRpm: staticData.maxRpm,
-                turboBoost: physics.turboBoost,
-                ballast: physics.ballast,
-                drs: physics.drs,
-                tc: tc.GetTCLevel(staticData.carModel, physics.tc),
-                abs: abs.GetABSLevel(staticData.carModel, physics.abs),
-                kersCharge: physics.kersCharge,
-                kersInput: physics.kersInput,
-                heading: physics.heading,
-                pitch: physics.pitch,
-                roll: physics.roll,
-                gameState: Mapping.MapGameState(graphics.status, USRTG.Enums.Game.AssettoCorsa),
-                sessionType: Mapping.MapSessionType(graphics.session, USRTG.Enums.Game.AssettoCorsa),
-                flag: Mapping.MapFlagType(graphics.flag, USRTG.Enums.Game.AssettoCorsa),
-                sessionTimeLeft: graphics.sessionTimeLeft,
-                numCars: staticData.numCars,
-                sectorCount: staticData.sectorCount,
-                airTemp: physics.airTemp,
-                roadTemp: physics.roadTemp,
-                surfaceGrip: graphics.surfaceGrip,
-                normalizedCarPosition: (int)graphics.normalizedCarPosition,
-                completedLaps: graphics.completedLaps,
-                position: graphics.position,
-                currentTime: graphics.iCurrentTime,
-                lastTime: graphics.iLastTime,
-                bestTime: graphics.iBestTime,
-                distanceTraveled: graphics.distanceTraveled,
-                isInPit: graphics.isInPit,
-                isInPitLane: graphics.isInPitLane,
-                currentSectorIndex: graphics.currentSectorIndex,
-                lastSectorTime: graphics.lastSectorTime,
-                tyreCompound: graphics.tyreCompound,
-                tyreWear: physics.tyreWear,
-                tyreTempInner: physics.tyreTempI,
-                tyreTempMiddle: physics.tyreTempM,
-                tyreTempOuter: physics.tyreTempO,
-                tyreCoreTemp: physics.tyreCoreTemperature,
-                wheelSlip: physics.wheelSlip
-            );
+            return Build(p, g, s);
         }
 
-        private static (Structs.SPageFilePhysics, Structs.SPageFileGraphic, Structs.SPageFileStatic) GetData()
+        /// <summary>Pure translation of the three pages into a packet; separated so it can be unit tested.</summary>
+        internal Packet Build(in Structs.SPageFilePhysics p, in Structs.SPageFileGraphic g, in Structs.SPageFileStatic s)
         {
-            MemoryMappedFile mmfPhysics = null!;
-            MemoryMappedFile mmfGraphics = null!;
-            MemoryMappedFile mmfStatic = null!;
-            MemoryMappedViewAccessor accessorPhysics = null!;
-            MemoryMappedViewAccessor accessorGraphics = null!;
-            MemoryMappedViewAccessor accessorStatic = null!;
-
-            //ValidateStructureSizes();
-
-            try
+            return new Packet
             {
-                mmfPhysics = MemoryMappedFile.OpenExisting(PhysicsMapName);
-                accessorPhysics = mmfPhysics.CreateViewAccessor(0, PhysicsSize, MemoryMappedFileAccess.Read);
+                Game = USRTG.Enums.Game.AssettoCorsa,
+                Id = p.packetId,
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
 
-                mmfGraphics = MemoryMappedFile.OpenExisting(GraphicsMapName);
-                accessorGraphics = mmfGraphics.CreateViewAccessor(0, GraphicsSize, MemoryMappedFileAccess.Read);
+                Throttle = p.gas,
+                Brake = p.brake,
+                Steer = p.steerAngle,
+                Clutch = p.clutch,
 
-                mmfStatic = MemoryMappedFile.OpenExisting(StaticMapName);
-                accessorStatic = mmfStatic.CreateViewAccessor(0, StaticSize, MemoryMappedFileAccess.Read);
+                SpeedKmh = p.speedKmh,
+                Gear = Mapping.MapKunosGear(p.gear),
+                Rpms = p.rpms,
+                MaxRpm = s.maxRpm,
+                Fuel = p.fuel,
+                MaxFuel = s.maxFuel,
+                FuelPercent = Units.Percent(p.fuel, s.maxFuel),
+                PitLimiterOn = p.pitLimiterOn != 0,
+                TurboBoost = p.turboBoost,
+                Ballast = p.ballast,
+                AutoShifterOn = p.autoShifterOn != 0,
+                IsAiControlled = p.isAIControlled != 0,
 
-#pragma warning disable CS8605
+                Tc = _tc.Update(s.carModel, p.tc),
+                Abs = _abs.Update(s.carModel, p.abs),
+                Drs = p.drs,
+                DrsAllowed = p.drsAvailable != 0,
+                KersCharge = p.kersCharge,
+                KersInput = p.kersInput,
+                BrakeBias = p.brakeBias,
 
-                byte[] staticBuffer = new byte[StaticSize];
-                accessorStatic.ReadArray(0, staticBuffer, 0, staticBuffer.Length);
-                GCHandle staticHandle = GCHandle.Alloc(staticBuffer, GCHandleType.Pinned);
-                Structs.SPageFileStatic staticData = (Structs.SPageFileStatic)Marshal.PtrToStructure(staticHandle.AddrOfPinnedObject(), typeof(Structs.SPageFileStatic));
-                staticHandle.Free();
+                Heading = p.heading,
+                Pitch = p.pitch,
+                Roll = p.roll,
+                AccG = Units.KunosAccG(p.accG),
+                Velocity = p.velocity,
+                LocalAngularVelocity = p.localAngularVel,
+                CarCoordinates = g.carCoordinates,
 
-                byte[] physicsBuffer = new byte[PhysicsSize];
-                accessorPhysics.ReadArray(0, physicsBuffer, 0, physicsBuffer.Length);
-                GCHandle physicsHandle = GCHandle.Alloc(physicsBuffer, GCHandleType.Pinned);
-                Structs.SPageFilePhysics physics = (Structs.SPageFilePhysics)Marshal.PtrToStructure(physicsHandle.AddrOfPinnedObject(), typeof(Structs.SPageFilePhysics));
-                physicsHandle.Free();
+                GameState = Mapping.MapKunosStatus(g.status),
+                SessionType = Mapping.MapKunosSessionType(g.session),
+                Flag = Mapping.MapAcFlag(g.flag),
+                SessionTimeLeft = g.sessionTimeLeft,
+                NumCars = s.numCars,
+                SectorCount = s.sectorCount,
+                TotalLaps = g.numberOfLaps,
+                PitWindowStart = s.pitWindowStart,
+                PitWindowEnd = s.pitWindowEnd,
+                IsOnline = s.isOnline != 0,
+                MandatoryPitDone = g.mandatoryPitDone != 0,
 
-                byte[] graphicsBuffer = new byte[GraphicsSize];
-                accessorGraphics.ReadArray(0, graphicsBuffer, 0, graphicsBuffer.Length);
-                GCHandle graphicsHandle = GCHandle.Alloc(graphicsBuffer, GCHandleType.Pinned);
-                Structs.SPageFileGraphic graphics = (Structs.SPageFileGraphic)Marshal.PtrToStructure(graphicsHandle.AddrOfPinnedObject(), typeof(Structs.SPageFileGraphic));
-                graphicsHandle.Free();
+                AirTemp = p.airTemp,
+                RoadTemp = p.roadTemp,
+                SurfaceGrip = g.surfaceGrip,
+                WindSpeed = g.windSpeed,
+                WindDirection = g.windDirection,
+                AirDensity = p.airDensity,
 
-#pragma warning restore CS8605
+                CarModel = s.carModel ?? "",
+                Track = s.track ?? "",
+                PlayerName = Units.JoinName(s.playerName, s.playerSurname),
+                TrackConfiguration = s.trackConfiguration,
+                CarSkin = s.carSkin,
 
-                return (physics, graphics, staticData);
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine("One or more shared memory maps not found. Ensure Assetto Corsa is running.");
-                return (new Structs.SPageFilePhysics(), new Structs.SPageFileGraphic(), new Structs.SPageFileStatic());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}. Verify game is in an active session.");
-                return (new Structs.SPageFilePhysics(), new Structs.SPageFileGraphic(), new Structs.SPageFileStatic());
-            }
-            finally
-            {
-                accessorPhysics?.Dispose();
-                accessorGraphics?.Dispose();
-                accessorStatic?.Dispose();
-                mmfPhysics?.Dispose();
-                mmfGraphics?.Dispose();
-                mmfStatic?.Dispose();
-            }
+                NormalizedCarPosition = g.normalizedCarPosition,
+                CompletedLaps = g.completedLaps,
+                Position = g.position,
+                CurrentTime = g.iCurrentTime,
+                LastTime = g.iLastTime,
+                BestTime = g.iBestTime,
+                DistanceTraveled = g.distanceTraveled,
+                IsInPit = g.isInPit != 0,
+                IsInPitLane = g.isInPitLane != 0,
+                CurrentSectorIndex = g.currentSectorIndex,
+                LastSectorTime = g.lastSectorTime,
+                PenaltyTime = g.penaltyTime,
+                ReplayTimeMultiplier = g.replayTimeMultiplier,
+                IdealLineOn = g.idealLineOn != 0,
+
+                TyreCompound = g.tyreCompound ?? "",
+                TyreCoreTemp = p.tyreCoreTemperature,
+                TyrePressure = p.wheelsPressure,
+                BrakeTemp = p.brakeTemp,
+                WheelSlip = p.wheelSlip,
+                TyreWear = p.tyreWear,
+                TyreTempInner = p.tyreTempI,
+                TyreTempMiddle = p.tyreTempM,
+                TyreTempOuter = p.tyreTempO,
+                TyreDirtyLevel = p.tyreDirtyLevel,
+                WheelLoad = p.wheelLoad,
+                WheelAngularSpeed = p.wheelAngularSpeed,
+                SuspensionTravel = p.suspensionTravel,
+                RideHeight = p.rideHeight,
+
+                CarDamage = p.carDamage,
+                NumberOfTyresOut = p.numberOfTyresOut,
+                FinalFF = p.finalFF
+            };
         }
 
-        private static void ValidateStructureSizes()
+        public void Close()
         {
-            int physicsSize = Marshal.SizeOf(typeof(Structs.SPageFilePhysics));
-            int graphicsSize = Marshal.SizeOf(typeof(Structs.SPageFileGraphic));
-            int staticSize = Marshal.SizeOf(typeof(Structs.SPageFileStatic));
-            Console.WriteLine($"Calculated Sizes: Physics={physicsSize}, Graphics={graphicsSize}, Static={staticSize}");
-            Console.WriteLine($"Expected Sizes: Physics={PhysicsSize}, Graphics={GraphicsSize}, Static={StaticSize}");
-            if (physicsSize != PhysicsSize || graphicsSize != GraphicsSize || staticSize != StaticSize)
-            {
-                Console.WriteLine("Error: Structure sizes do not match expected values!");
-            }
+            _physics.Close();
+            _graphics.Close();
+            _static.Close();
+        }
+
+        public void Dispose()
+        {
+            _physics.Dispose();
+            _graphics.Dispose();
+            _static.Dispose();
         }
     }
 }
