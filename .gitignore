@@ -1,6 +1,6 @@
 .vs/
-server/bin/
-server/obj/
+bin/
+obj/
 
 *.user
 *.sln
